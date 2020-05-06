@@ -9,38 +9,35 @@
     canvas {
       display: block;
     }
+
+    #panel {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      padding: 12px;
+    }
+
+    button {
+      border-radius: 50px;
+      width: 60px;
+      height: 60px;
+      overflow: hidden;
+      border: 2px solid #000;
+      background: none;
+      cursor: pointer;
+      background-size: cover;
+      background-origin: border-box;
+      background-position: 50% 50%;
+      display: block;
+      margin-top: 18px;
+      outline: none;
+      box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
+    }
   </style>
 </head>
 
 <body>
   <canvas></canvas>
-
-  <script type="module">
-    import { stippleImage } from '../bin/app.js';
-
-    const canvas = document.querySelector('canvas');
-
-    (async () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      const info = await stippleImage('./obama.png');
-      // const info = await stippleImage('./preet.jpg');
-      const scale = Math.min(canvas.width / info.width, canvas.height / info.height);
-      const points = info.points;
-      const n = Math.floor(points.length / 2);
-
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#000';
-      for (let i = 0; i < n; i++) {
-        ctx.beginPath();
-        ctx.arc(points[i * 2] * scale, points[i * 2 + 1] * scale, 2, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      console.log(n);
-    })();
-
-  </script>
+  <div id="panel"></div>
+  <script type="module" src="../bin/main.js"></script>
 </body>
