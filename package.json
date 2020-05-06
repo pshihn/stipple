@@ -1,0 +1,30 @@
+{
+  "name": "stipple",
+  "version": "0.0.1",
+  "description": "Image stippling",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pshihn/stipple.git"
+  },
+  "keywords": [
+    "stippling"
+  ],
+  "author": "Preet Shihn",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pshihn/stipple/issues"
+  },
+  "homepage": "https://github.com/pshihn/stipple#readme",
+  "devDependencies": {
+    "@types/delaunator": "^3.0.0",
+    "tslint": "^6.1.2",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "delaunator": "^4.0.1"
+  }
+}
