@@ -8,8 +8,7 @@ const images = [
   './monalisa.jpg',
   './obama.png',
   './scene1.jpg',
-  './scene2.jpg',
-  './scene3.jpg',
+  './scene3.png'
 ];
 
 
