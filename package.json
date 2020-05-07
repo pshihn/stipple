@@ -21,10 +21,7 @@
   "homepage": "https://github.com/pshihn/stipple#readme",
   "devDependencies": {
     "@types/delaunator": "^3.0.0",
-    "tslint": "^6.1.2",
-    "typescript": "^3.8.3"
-  },
-  "dependencies": {
+    "typescript": "^3.8.3",
     "delaunator": "^4.0.1"
   }
 }

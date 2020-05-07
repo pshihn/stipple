@@ -13,7 +13,6 @@ export interface StippleInfo {
   height: number;
 }
 
-
 function grayValue(i: number, rgba: Uint8ClampedArray): number {
   const offset = i * 4;
   return 1 - (0.299 * rgba[offset] + 0.587 * rgba[offset + 1] + 0.114 * rgba[offset + 2]) / 254;
