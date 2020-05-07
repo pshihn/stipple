@@ -11,9 +11,10 @@ export interface StippleInfo {
   points: Float32Array;
   width: number;
   height: number;
+  iteration: number;
 }
 
-export type StippleCallback = (info: StippleInfo, iteration: number) => void;
+export type StippleCallback = (info: StippleInfo) => void;
 
 // Adapted from https://observablehq.com/@mbostock/voronoi-stippling
 export function stipple(imageDataBuffer: ArrayBuffer, width: number, height: number, pointCount?: number, iterations?: number[], callback?: StippleCallback): StippleInfo {
@@ -59,10 +60,10 @@ export function stipple(imageDataBuffer: ArrayBuffer, width: number, height: num
     voronoi.update();
 
     if (callback) {
-      callback({ points, width, height }, k);
+      callback({ points, width, height, iteration: k });
     }
   }
-  return { points, width, height };
+  return { points, width, height, iteration: highestIteration };
 }
 
 function grayValue(i: number, rgba: Uint8ClampedArray): number {
