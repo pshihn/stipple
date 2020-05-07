@@ -35,7 +35,7 @@ export function stipple(imageDataBuffer: ArrayBuffer, width: number, height: num
   }
 
   const voronoi = new Voronoi(points, [0, 0, width, height]);
-  for (let k = 0; k < highestIteration; ++k) {
+  for (let k = 0; k <= highestIteration; ++k) {
     c.fill(0);
     s.fill(0);
     for (let y = 0, i = 0; y < height; ++y) {
