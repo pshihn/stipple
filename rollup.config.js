@@ -3,7 +3,7 @@ import { terser } from "rollup-plugin-terser";
 
 export default [
   {
-    input: 'bin/stipple.js',
+    input: 'lib/stipple.js',
     output: {
       file: 'bundled/stipple.iife.js',
       format: 'iife',
