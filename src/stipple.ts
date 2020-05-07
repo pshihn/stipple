@@ -59,7 +59,7 @@ export function stipple(imageDataBuffer: ArrayBuffer, width: number, height: num
     }
     voronoi.update();
 
-    if (callback) {
+    if (callback && (iterations.indexOf(k) >= 0)) {
       callback({ points, width, height, iteration: k });
     }
   }
