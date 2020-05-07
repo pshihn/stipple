@@ -5,8 +5,11 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 const images = [
+  './monalisa.jpg',
   './obama.png',
-  './preet.jpg'
+  './scene1.jpg',
+  './scene2.jpg',
+  './scene3.jpg',
 ];
 
 

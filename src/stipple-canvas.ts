@@ -1,18 +1,21 @@
 import { createProgram, resizeCanvasToDisplaySize } from './gl-utils';
 import { loadImageData } from './image-utils';
 import { BitmapData, stipple, StippleInfo } from './stipple';
+import { m3 } from './m3';
 
 const vs = `
 attribute vec2 a_src;
 attribute vec2 a_dst;
 
 uniform vec2 u_resolution;
-uniform mat3 u_matrix;
+uniform mat3 u_smatrix;
+uniform mat3 u_dmatrix;
 uniform float u_time;
 
 void main() {
-  // vec2 position = (u_matrix * vec3(a_src, 1)).xy;
-  vec2 position = a_src + ((a_dst - a_src) * u_time);
+  vec2 src = (u_smatrix * vec3(a_src, 1)).xy;
+  vec2 dst = (u_dmatrix * vec3(a_dst, 1)).xy;
+  vec2 position = src + ((dst - src) * u_time);
   vec2 zeroToOne = position / u_resolution;
   vec2 zeroToTwo = zeroToOne * 2.0;
   vec2 clipSpace = zeroToTwo - 1.0;
@@ -35,30 +38,33 @@ void main() {
 }
 `;
 
-const ANIMATION_DURATION = 5000;
+const ANIMATION_DURATION = 1000;
+const PARTICLE_COUNT = 10000;
 
 export class StippleCanvas {
   private canvas: HTMLCanvasElement;
   private gl: WebGLRenderingContext;
   private program: WebGLProgram;
-  private srcLoc = 0;
-  private dstLoc = 0;
+  private srcLoc = -1;
+  private dstLoc = -1;
   private resolutionLoc: WebGLUniformLocation | null;
-  private matrixLoc: WebGLUniformLocation | null;
+  private srcMatrixLoc: WebGLUniformLocation | null;
+  private dstMatrixLoc: WebGLUniformLocation | null;
   private timeLoc: WebGLUniformLocation | null;
   private srcBuffer: WebGLBuffer;
   private dstBuffer: WebGLBuffer;
-  private n = 10000;
+
+  private n = PARTICLE_COUNT;
   private srcPoints?: Float32Array;
   private dstPoints?: Float32Array;
+  private srcMatrix = m3.identity();
+  private dstMatrix = m3.identity();
 
   private animationTimeStart = 0;
   private animating = false;
 
   private imageMap = new Map<string, StippleInfo>();
   private currentImage = '';
-  private scale = 1;
-  private offset = [0, 0];
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -73,7 +79,8 @@ export class StippleCanvas {
     this.dstLoc = gl.getAttribLocation(this.program, 'a_dst');
     this.srcLoc = gl.getAttribLocation(this.program, 'a_src');
     this.resolutionLoc = gl.getUniformLocation(this.program, 'u_resolution');
-    this.matrixLoc = gl.getUniformLocation(this.program, 'u_matrix');
+    this.srcMatrixLoc = gl.getUniformLocation(this.program, 'u_smatrix');
+    this.dstMatrixLoc = gl.getUniformLocation(this.program, 'u_dmatrix');
     this.timeLoc = gl.getUniformLocation(this.program, 'u_time');
 
     // create buffers
@@ -145,14 +152,14 @@ export class StippleCanvas {
     // set uniforms
     gl.uniform2f(this.resolutionLoc, gl.canvas.width, gl.canvas.height);
     gl.uniform1f(this.timeLoc, t);
+    gl.uniformMatrix3fv(this.srcMatrixLoc, false, this.srcMatrix);
+    gl.uniformMatrix3fv(this.dstMatrixLoc, false, this.dstMatrix);
 
     // Draw!
     gl.drawArrays(gl.POINTS, 0, this.n);
 
     const delta = performance.now() - t1;
-    if (delta > 1) {
-      console.log(delta);
-    }
+    console.log(delta);
 
     if (t < 1) {
       this.nextTic();
@@ -161,11 +168,20 @@ export class StippleCanvas {
     }
   }
 
-  private update(points: Float32Array) {
+  private update(info: StippleInfo) {
+    // update points
     if (this.dstPoints) {
       this.updatePoints(this.dstPoints, false);
     }
-    this.updatePoints(points, true);
+    this.updatePoints(info.points, true);
+
+    // update matrices
+    this.srcMatrix = this.dstMatrix;
+    const scale = Math.min(this.canvas.width / info.width, this.canvas.height / info.height);
+    const tx = (this.canvas.width - (info.width * scale)) / 2;
+    const ty = (this.canvas.height - (info.height * scale)) / 2;
+    this.dstMatrix = m3.multiply(m3.translation(tx, ty), m3.scaling(scale, scale));
+
     this.animationTimeStart = 0;
     if (!this.animating) {
       this.animating = true;
@@ -191,7 +207,7 @@ export class StippleCanvas {
             width: imageData.width,
             pointCount: this.n
           };
-          info = await stipple(data, 60);
+          info = await stipple(data, 80);
           if (this.currentImage !== url) {
             return;
           }
@@ -199,8 +215,7 @@ export class StippleCanvas {
         }
       }
       if (info) {
-        this.scale = Math.min(this.canvas.width / info.width, this.canvas.height / info.height);
-        this.update(info.points);
+        this.update(info);
       }
     }
   }
