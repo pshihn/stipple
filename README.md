@@ -1,2 +1,2 @@
 # stipple
-Stipple 
+Create stippled image from image data

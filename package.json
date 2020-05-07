@@ -1,9 +1,10 @@
 {
   "name": "stipple",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Image stippling",
   "main": "index.js",
   "scripts": {
+    "build": "rm -rf bin && tsc && rollup -c",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,7 +22,12 @@
   "homepage": "https://github.com/pshihn/stipple#readme",
   "devDependencies": {
     "@types/delaunator": "^3.0.0",
-    "typescript": "^3.8.3",
+    "rollup": "^2.8.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^5.3.0",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
     "delaunator": "^4.0.1"
   }
 }
