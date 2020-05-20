@@ -1,8 +1,10 @@
 {
   "name": "stipple",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Image stippling",
-  "main": "index.js",
+  "main": "lib/stipple.js",
+  "module": "lib/stipple.js",
+  "types": "lib/stipple.d.ts",
   "scripts": {
     "build": "rm -rf lib && tsc && rollup -c",
     "test": "echo \"Error: no test specified\" && exit 1"
